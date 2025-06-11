@@ -4,10 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.todoproject.screens.HomeScreen
 import com.example.todoproject.ui.theme.TodoprojectTheme
 
 
@@ -25,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ToDoApp(){
-    HomeScreen()
+   Text("hello world")
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = "id:pixel_7")
