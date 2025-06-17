@@ -13,11 +13,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,59 +27,60 @@ import com.example.todoproject.ui.theme.TodoprojectTheme
 
 
 @Composable
-fun ToDoItemCard(
+fun TodoItemCard(
     todo: ToDoItem,
-    onCheckedChange: (Int) -> Unit,
-    onDelete: (Int)-> Unit
-){
+    onToggle: () -> Unit,
+    onDelete: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
         Row(
-            Modifier.fillMaxWidth().padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
                 checked = todo.isComplete,
-                onCheckedChange={onCheckedChange(todo.id)}
+                onCheckedChange = { onToggle() }
             )
-            Spacer(modifier = Modifier.width(10.dp))
+
+            Spacer(modifier = Modifier.width(12.dp))
+
             Text(
                 text = todo.text,
                 modifier = Modifier.weight(1f),
-                textDecoration = if (todo.isComplete){
+                textDecoration = if (todo.isComplete) {
                     TextDecoration.LineThrough
-                }else{
+                } else {
                     TextDecoration.None
                 },
-                color = if (todo.isComplete){
+                color = if (todo.isComplete) {
                     Color.Gray
-                }else{
-                   MaterialTheme.colorScheme.onSurface // ensure visible
+                } else {
+                    MaterialTheme.colorScheme.onSurface
                 }
-                )
-            IconButton(
-                onClick = { onDelete(todo.id) },
-            ){
+            )
+
+            IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Delete todo",
+                    contentDescription = "Delete",
                     tint = Color.Red
                 )
-
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ToDoItemCardPreview(){
     TodoprojectTheme {
-        ToDoItemCard(todo = ToDoItem(1,"osama " +
-                "",false), onCheckedChange = {}, onDelete = {})
+        TodoItemCard (todo = ToDoItem(1,"osama " +
+                "",false), onToggle = {}, onDelete = {})
     }
 }

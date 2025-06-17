@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StatsSection(
     totalTasks: Int,
-    completedTasks: Int,
-){
+    completedTasks: Int
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -26,16 +26,17 @@ fun StatsSection(
             title = "Total",
             value = totalTasks.toString(),
             icon = Icons.Default.List,
-            color = Color.Blue
-
+            color = Color.Blue,
+            modifier = Modifier.weight(1f)
         )
+
         StatCard(
             title = "Done",
             value = completedTasks.toString(),
             icon = Icons.Default.CheckCircle,
-            color = Color.Green
+            color = Color.Green,
+            modifier = Modifier.weight(1f)
         )
-
     }
 }
 
