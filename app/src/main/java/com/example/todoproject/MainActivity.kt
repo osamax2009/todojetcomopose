@@ -5,33 +5,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.BottomAppBarDefaults.windowInsets
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-<<<<<<< Updated upstream
-import com.example.todoproject.screens.HomeScreen
-=======
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.todoproject.model.Screen
-import com.example.todoproject.model.toDoItem
->>>>>>> Stashed changes
-import com.example.todoproject.ui.theme.TodoprojectTheme
-import androidx.navigation.compose.*
 import com.example.todoproject.component.ActionsSection
 import com.example.todoproject.component.StatsSection
 import com.example.todoproject.component.WelcomeCard
+import com.example.todoproject.model.Screen
+import com.example.todoproject.ui.theme.TodoprojectTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -48,9 +37,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ToDoApp(){
-<<<<<<< Updated upstream
+
     HomeScreen()
-=======
+
     val navController = rememberNavController()
 
 
@@ -66,7 +55,6 @@ fun ToDoApp(){
             )
         }
     }
->>>>>>> Stashed changes
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = "id:pixel_7")
