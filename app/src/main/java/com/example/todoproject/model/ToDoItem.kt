@@ -6,6 +6,4 @@ data class ToDoItem(
     val isDone:Boolean
 )
 
-val toDoItem = ToDoItem(
-    id = 1 , isDone = true
-)
+
