@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todoproject.model.Screen
 import com.example.todoproject.model.ToDoItem
+import com.example.todoproject.screens.ObBoardingScreen
+import com.example.todoproject.screens.SplashScreen
 import com.example.todoproject.screens.TodoScreen
 
 
@@ -50,7 +52,7 @@ fun ToDoApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Splash.route
     ) {
         // Home Screen
         composable(Screen.Home.route) {
@@ -75,6 +77,21 @@ fun ToDoApp() {
                 onToggleTodo = toggleTodo,
                 onDeleteTodo = deleteTodo
             )
+        }
+        composable(Screen.OnBoarding.route) {
+            ObBoardingScreen(
+                onComplete = {navController.navigate(Screen.Login.route)}
+            )
+        }
+
+        composable(Screen.Splash.route) {
+            SplashScreen { route ->
+                navController.navigate(route) {
+                    popUpTo(Screen.Splash.route) {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }
