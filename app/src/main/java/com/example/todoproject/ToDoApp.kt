@@ -6,11 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todoproject.model.Screen
 import com.example.todoproject.model.ToDoItem
+import com.example.todoproject.screens.Login
 import com.example.todoproject.screens.ObBoardingScreen
 import com.example.todoproject.screens.SplashScreen
 import com.example.todoproject.screens.TodoScreen
@@ -19,6 +21,7 @@ import com.example.todoproject.screens.TodoScreen
 @Composable
 fun ToDoApp() {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     var todoList: List<ToDoItem> by remember { mutableStateOf(emptyList()) }
     var nextId: Int by remember { mutableStateOf(1) }
@@ -62,8 +65,15 @@ fun ToDoApp() {
                 onNavigateToTodos = {
                     navController.navigate(Screen.TodoList.route)
                 },
-                onClearCompleted = clearCompleted
-            )
+                onClearCompleted = clearCompleted,
+                onLogout = {
+                    AuthPrefs.logout(context)
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Home.route) {
+                            inclusive = true
+                        }
+                    }
+            })
         }
 
         // Todo List Screen
@@ -79,8 +89,12 @@ fun ToDoApp() {
             )
         }
         composable(Screen.OnBoarding.route) {
+
             ObBoardingScreen(
-                onComplete = {navController.navigate(Screen.Login.route)}
+                onComplete = {
+                    AuthPrefs.setShowOnboardingStatus(context)
+                    navController.navigate(Screen.Login.route)
+                }
             )
         }
 
@@ -92,6 +106,18 @@ fun ToDoApp() {
                     }
                 }
             }
+        }
+        composable(Screen.Login.route) {
+            Login(
+                onLogin = { username ->
+                    AuthPrefs.saveLogin(context, username)
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
 }
