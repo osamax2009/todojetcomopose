@@ -47,8 +47,8 @@ fun TodoScreen(
     todoList: List<ToDoItem>,
     onNavigateBack: () -> Unit,
     onAddTodo: (String) -> Unit,
-    onToggleTodo: (Int) -> Unit,
-    onDeleteTodo: (Int) -> Unit
+    onToggleTodo: (ToDoItem) -> Unit,
+    onDeleteTodo: (ToDoItem) -> Unit
 ) {
     var newTodoText: String  by remember { mutableStateOf("") }
 
@@ -144,8 +144,8 @@ fun TodoScreen(
                     items(todoList, key = { it.id }) { todo ->
                         TodoItemCard(
                             todo = todo,
-                            onToggle = { onToggleTodo(todo.id) },
-                            onDelete = { onDeleteTodo(todo.id) }
+                            onToggle = { onToggleTodo(todo) },
+                            onDelete = { onDeleteTodo(todo) }
                         )
                     }
                 }

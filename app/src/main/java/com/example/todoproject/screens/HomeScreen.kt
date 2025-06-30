@@ -1,4 +1,5 @@
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import com.example.todoproject.component.StatsSection
 import com.example.todoproject.component.WelcomeCard
 import com.example.todoproject.ui.theme.TodoprojectTheme
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -44,6 +46,7 @@ fun HomeScreen(
             title = {Text("Hello, $useranme")},
             actions = {
                 IconButton(onClick = {
+                    Log.d("HomeScreen", "Logout button clicked")
                     onLogout
                 }){
                     Icon(

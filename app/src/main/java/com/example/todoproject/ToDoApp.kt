@@ -1,12 +1,15 @@
 package com.example.todoproject
 
 import HomeScreen
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,35 +26,18 @@ fun ToDoApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    var todoList: List<ToDoItem> by remember { mutableStateOf(emptyList()) }
-    var nextId: Int by remember { mutableStateOf(1) }
+    // Get Repository from Application
+    val application = context.applicationContext as TodoApplication
+    val repository = application.repository
 
-    // Helper functions
-    val addTodo = { text: String ->
-        if (text.isNotBlank()) {
-            todoList = todoList + ToDoItem(id = nextId, text = text.trim())
-            nextId++
-        }
-    }
+    // Create ViewModel with Factory
+    val viewModelFactory = remember { TodoViewModelFactory(repository) }
+    val todoViewModel: TodoViewModel = viewModel(factory = viewModelFactory)
 
-    val toggleTodo = { id: Int ->
-        todoList = todoList.map { todo ->
-            if (todo.id == id) todo.copy(isComplete = !todo.isComplete)
-            else todo
-        }
-    }
-
-    val deleteTodo = { id: Int ->
-        todoList = todoList.filter { it.id != id }
-    }
-
-    val clearCompleted = {
-        todoList = todoList.filter { !it.isComplete }
-    }
-
-    // Calculate stats
-    val totalTasks = todoList.size
-    val completedTasks = todoList.count { it.isComplete }
+    // Observe data from Room
+    val allTodos by todoViewModel.allTodos.collectAsState(initial = emptyList())
+    val totalCount by todoViewModel.totalCount.collectAsState(initial = 0)
+    val completedCount by todoViewModel.completedCount.collectAsState(initial = 0)
 
     NavHost(
         navController = navController,
@@ -60,14 +46,15 @@ fun ToDoApp() {
         // Home Screen
         composable(Screen.Home.route) {
             HomeScreen(
-                totalTasks = totalTasks,
-                completedTasks = completedTasks,
+                totalTasks = totalCount,
+                completedTasks = completedCount,
                 onNavigateToTodos = {
                     navController.navigate(Screen.TodoList.route)
                 },
-                onClearCompleted = clearCompleted,
+                onClearCompleted = {  todoViewModel.clearCompleted() },
                 onLogout = {
                     AuthPrefs.logout(context)
+                    Log.d("HomeScreen", "Logout button clicked in nav")
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Home.route) {
                             inclusive = true
@@ -79,13 +66,19 @@ fun ToDoApp() {
         // Todo List Screen
         composable(Screen.TodoList.route) {
             TodoScreen(
-                todoList = todoList,
+                todoList = allTodos,
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                onAddTodo = addTodo,
-                onToggleTodo = toggleTodo,
-                onDeleteTodo = deleteTodo
+                onAddTodo ={ text ->
+                    todoViewModel.addTodo(text)
+                } ,
+                onToggleTodo = { todo ->
+                    todoViewModel.toggleTodo(todo)
+                },
+                onDeleteTodo = { todo ->
+                    todoViewModel.deleteTodo(todo)
+                }
             )
         }
         composable(Screen.OnBoarding.route) {
