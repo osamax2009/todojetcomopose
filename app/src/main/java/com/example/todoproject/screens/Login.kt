@@ -1,5 +1,6 @@
 package com.example.todoproject.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,13 +31,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todoproject.api.ApiClient
+import com.example.todoproject.model.LoginRequest
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
 fun Login(
     onLogin : (String) -> Unit
     ){
-    var username by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage  by remember { mutableStateOf("") }
@@ -66,9 +71,9 @@ fun Login(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = username,
+            value = phone,
             onValueChange = {
-                 username = it
+                 phone = it
                 errorMessage = ""
             },
             label = {
@@ -104,16 +109,29 @@ fun Login(
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                if (username.isBlank() || password.isBlank()) {
+                if (phone.isBlank() || password.isBlank()) {
                     errorMessage = "Username or password cannot be empty"
                     return@Button
                 }
-                if (username.length >= 3 && password.length >= 3) {
-                    if (username == "basher" && password == "1234") {
-                        onLogin(username)
-                    }else {
-                        errorMessage = "Invalid username or password"
+
+                coroutineScope.launch {
+                    try {
+                        val loginRequest = LoginRequest(phone, password)
+
+                        val response = ApiClient.apiService.login(loginRequest)
+
+                        if (response.isSuccessful) {
+                            val loginResponse = response.body()
+                            Log.d("LoginResponse", "Login response: $loginResponse")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("LoginError", "Login error: ${e.message}")
                     }
+                }
+
+                if (phone.length >= 3 && password.length >= 3) {
+
+
                 } else {
                     errorMessage = "Username or password must be at least 3 characters"
                 }
