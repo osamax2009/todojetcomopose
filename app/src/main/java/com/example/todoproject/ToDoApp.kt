@@ -5,16 +5,13 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todoproject.model.Screen
-import com.example.todoproject.model.ToDoItem
 import com.example.todoproject.screens.Login
 import com.example.todoproject.screens.ObBoardingScreen
 import com.example.todoproject.screens.SplashScreen
@@ -102,8 +99,8 @@ fun ToDoApp() {
         }
         composable(Screen.Login.route) {
             Login(
-                onLogin = { username ->
-                    AuthPrefs.saveLogin(context, username)
+                onLogin = { userdata ->
+                    AuthPrefs.saveLogin(context, userdata)
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) {
                             inclusive = true

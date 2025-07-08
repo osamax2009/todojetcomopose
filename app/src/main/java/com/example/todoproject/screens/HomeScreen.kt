@@ -35,7 +35,7 @@ fun HomeScreen(
     onLogout: () -> Unit
 ) {
 
-    val useranme  = AuthPrefs.getUsername(LocalContext.current)
+    val useranme  = AuthPrefs.getUserData(LocalContext.current)?.username
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +47,7 @@ fun HomeScreen(
             actions = {
                 IconButton(onClick = {
                     Log.d("HomeScreen", "Logout button clicked")
-                    onLogout
+                    onLogout()
                 }){
                     Icon(
                         imageVector = Icons.Default.ExitToApp,

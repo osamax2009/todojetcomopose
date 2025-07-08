@@ -14,7 +14,13 @@ data class LoginResponse(
 
 data class UserData(
     @SerializedName("token")
-    val token : String?
+    val token: String?,
+    @SerializedName("username")
+    val username: String?,
+    @SerializedName("phone")
+    val phone: String?,
+    @SerializedName("user_id")
+    val userId: Int?
 )
 
 data class ErrorResponse(

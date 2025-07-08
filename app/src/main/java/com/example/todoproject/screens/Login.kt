@@ -22,25 +22,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todoproject.AuthPrefs
 import com.example.todoproject.api.ApiClient
 import com.example.todoproject.model.LoginRequest
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import com.example.todoproject.model.UserData
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun Login(
-    onLogin : (String) -> Unit
+    onLogin : (UserData) -> Unit
     ){
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -122,18 +128,16 @@ fun Login(
 
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
-                            Log.d("LoginResponse", "Login response: $loginResponse")
+                            if (loginResponse?.status == true && loginResponse.data != null) {
+                                AuthPrefs.saveLogin(context, loginResponse.data)
+                                onLogin(loginResponse.data)
+                            } else {
+                                errorMessage = loginResponse?.message ?: "Login failed"
+                            }
                         }
                     } catch (e: Exception) {
                         Log.e("LoginError", "Login error: ${e.message}")
                     }
-                }
-
-                if (phone.length >= 3 && password.length >= 3) {
-
-
-                } else {
-                    errorMessage = "Username or password must be at least 3 characters"
                 }
             },
             modifier = Modifier.fillMaxWidth(),
