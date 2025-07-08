@@ -1,5 +1,6 @@
 package com.example.todoproject
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoproject.model.ToDoItem
@@ -41,6 +42,19 @@ class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
     fun deleteAll() {
         viewModelScope.launch {
             repository.deleteAllTodos()
+        }
+    }
+
+    fun syncFromBackend() {
+        viewModelScope.launch {
+            Log.d("TodoViewModel", "🔄 Starting backend sync...")
+            val success = repository.syncTodosFromBackend()
+
+            if (success) {
+                Log.d("TodoViewModel", "✅ Backend sync completed successfully")
+            } else {
+                Log.e("TodoViewModel", "❌ Backend sync failed")
+            }
         }
     }
 }

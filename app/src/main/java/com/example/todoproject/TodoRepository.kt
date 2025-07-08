@@ -1,5 +1,7 @@
 package com.example.todoproject
 
+import android.util.Log
+import com.example.todoproject.api.ApiClient
 import com.example.todoproject.database.TodoDao
 import com.example.todoproject.model.ToDoItem
 import kotlinx.coroutines.flow.Flow
@@ -35,5 +37,45 @@ class TodoRepository(private val todoDao: TodoDao) {
 
     suspend fun deleteAllTodos() {
         todoDao.deleteAllTodos()
+    }
+    suspend fun syncTodosFromBackend(): Boolean {
+        return try {
+            Log.d("TodoSync", "🔄 Syncing todos from backend...")
+
+            val response = ApiClient.apiService.getTodos()
+
+            if (response.isSuccessful) {
+                val todosResponse = response.body()
+
+                if (todosResponse?.status == true && todosResponse.data.isNotEmpty()) {
+                    // Clear existing todos (optional)
+                    todoDao.deleteAllTodos()
+
+                    // Convert backend todos to local todos and save
+                    todosResponse.data.forEach { backendTodo ->
+                        val localTodo = ToDoItem(
+                            id = 0, // Auto-generate new ID for local database
+                            text = backendTodo.text,
+                            isComplete = backendTodo.isComplete,
+                            createdAt = backendTodo.createdAt
+                        )
+                        todoDao.insertTodo(localTodo)
+                    }
+
+                    Log.d("TodoSync", "✅ Synced ${todosResponse.data.size} todos successfully")
+                    true
+                } else {
+                    Log.w("TodoSync", "⚠️ No todos received from backend")
+                    false
+                }
+            } else {
+                Log.e("TodoSync", "❌ Backend sync failed: ${response.code()}")
+                false
+            }
+
+        } catch (e: Exception) {
+            Log.e("TodoSync", "❌ Sync error: ${e.message}", e)
+            false
+        }
     }
 }

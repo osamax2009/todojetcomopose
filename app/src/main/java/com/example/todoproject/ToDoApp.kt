@@ -57,7 +57,9 @@ fun ToDoApp() {
                             inclusive = true
                         }
                     }
-            })
+            },
+                onSyncFromBackend = { todoViewModel.syncFromBackend() }
+                )
         }
 
         // Todo List Screen

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -82,15 +83,11 @@ fun Login(
                  phone = it
                 errorMessage = ""
             },
-            label = {
-                Text(text = "Username")
-            },
+            label = { Text("Phone Number") },
+            placeholder = { Text("+964xxxxxxxxx") },
             leadingIcon = {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = null,
-                )
-            }
+                Icon(Icons.Default.Phone, contentDescription = null)
+            },
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
